@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://waybillEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="waybillDc"
+                  class="com.company.spacetrans.entity.Waybill">
+            <fetchPlan extends="_base">
+                <property name="creator" fetchPlan="_base"/>
+                <property name="shipper" fetchPlan="_base"/>
+                <property name="consignee" fetchPlan="_base"/>
+                <property name="departurePort" fetchPlan="_base"/>
+                <property name="destinationPort" fetchPlan="_base"/>
+                <property name="carrier" fetchPlan="_base"/>
+                <property name="items" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+            <collection id="itemsDc" property="items"/>
+        </instance>
+        <collection id="individualDc"
+                  class="com.company.spacetrans.entity.Individual">
+            <loader id="individualDl">
+                <query>
+                    <![CDATA[select i from st_Individual i]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="companyDc"
+                    class="com.company.spacetrans.entity.Company">
+            <loader id="companyDl">
+                <query>
+                    <![CDATA[select c from st_Company c]]>
+                </query>
+            </loader>
+        </collection>
+
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true" expand="editActions">
+        <form id="form" dataContainer="waybillDc">
+            <column width="350px">
+                <textField id="referenceField" property="reference"/>
+                <textField  id="creatorField" property="creator" editable="false"/>
+                <hbox id="shipperArea" spacing="true" caption="msg://shipperArea.caption" expand="shipperField" width="600px">
+                    <comboBox id="shipperTypeCombo" nullOptionVisible="false"
+                              textInputAllowed="false"/>
+                    <entityComboBox id="shipperField" property="shipper" dataContainer="waybillDc">
+                        <actions>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityComboBox>
+                </hbox>
+                <hbox id="consigneeArea" spacing="true" caption="msg://consigneeArea.caption" expand="consigneeField" width="600px">
+                    <comboBox id="consigneeTypeCombo"  textInputAllowed="false"
+                              nullOptionVisible="false"/>
+                    <entityPicker id="consigneeField">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                </hbox>
+                <hbox id="departureArea" spacing="true" caption="msg://departureArea.caption" expand="departurePortField" width="600px">
+                    <comboBox id="departureABCombo" textInputAllowed="false"/>
+                    <entityPicker id="departurePortField" property="departurePort" dataContainer="waybillDc">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                </hbox>
+                <hbox id="destinationArea" spacing="true" caption="msg://destinationABCombo.caption" expand="destinationPortField" width="600px">
+                    <comboBox id="destinationABCombo" textInputAllowed="false"/>
+                    <entityPicker id="destinationPortField" property="destinationPort" dataContainer="waybillDc">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                </hbox>
+                <entityPicker id="carrierField" property="carrier">
+                    <actions>
+                        <action id="entityLookup" type="entity_lookup"/>
+                        <action id="entityClear" type="entity_clear"/>
+                    </actions>
+                </entityPicker>
+                <textField id="totalWeightField" property="totalWeight" editable="false"/>
+                <textField id="totalChargeField" property="totalCharge" editable="false"/>
+            </column>
+        </form>
+        <groupBox id="itemsBox" caption="msg://com.company.spacetrans.entity/Waybill.items">
+            <table id="itemsTable" dataContainer="itemsDc" width="100%" height="200px">
+                <actions>
+                    <action id="create" type="create"/>
+                    <action id="edit" type="edit"/>
+                    <action id="remove" type="remove"/>
+                    <action id="positionDown" icon="CARET_DOWN" trackSelection="true"/>
+                    <action id="positionUp" icon="CARET_UP" trackSelection="true"/>
+                </actions>
+                <columns>
+                    <column id="number" width="100" sort="ASCENDING"/>
+                    <column id="name"/>
+                    <column id="weigth"/>
+                    <column id="charge"/>
+                </columns>
+                <buttonsPanel>
+                    <button action="itemsTable.create"/>
+                    <button action="itemsTable.edit"/>
+                    <button action="itemsTable.remove"/>
+                    <button action="itemsTable.positionDown" />
+                    <button action="itemsTable.positionUp" />
+                </buttonsPanel>
+            </table>
+        </groupBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>
